@@ -13,11 +13,13 @@ import 'vant/lib/index.css'
 import 'amfe-flexible'
 // 引入公共头部
 import HmHeader from './components/HmHeader.vue'
+import HmLogo from './components/HmLogo.vue'
 // 使用Vant
 Vue.use(Vant)
 
 Vue.config.productionTip = false
 Vue.component('hm-header', HmHeader)
+Vue.component('hm-logo', HmLogo)
 
 new Vue({
   router,

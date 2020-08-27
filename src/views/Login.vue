@@ -18,9 +18,9 @@
         placeholder="密码"
         :rules="rules.password"
       />
-      <div style="margin: 16px;">
+      <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
-          提交
+          登录
         </van-button>
       </div>
     </van-form>

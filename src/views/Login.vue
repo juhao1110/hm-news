@@ -1,9 +1,13 @@
 <template>
-  <div>我是登录页</div>
+  <div class="login">
+    <hm-header>登录</hm-header>
+  </div>
 </template>
 
 <script>
-export default {}
+
+export default {
+}
 </script>
 
 <style>

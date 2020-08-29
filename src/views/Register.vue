@@ -66,7 +66,9 @@ export default {
       const { statusCode, message } = res.data
       if (statusCode === 200) {
         this.$toast.success(message)
-        this.$router.push('/login')
+        // 注册成功，跳转到登录页面，并且把注册好的账号和密码带到路由中，等跳转到登录页面直接赋值
+        // 使用命名路由，用params带上参数
+        this.$router.push({ name: 'login', params: this.user })
       } else {
         this.$toast.fail(message)
       }
@@ -75,5 +77,15 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less" scoped>
+// scoped属性是为了让当前样式只在当前组件生效
+.tip {
+  height: 50px;
+  line-height: 50px;
+  text-align: right;
+  margin: 15px;
+  a {
+    color: red;
+  }
+}
 </style>

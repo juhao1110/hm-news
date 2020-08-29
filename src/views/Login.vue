@@ -48,15 +48,26 @@ export default {
       }
     }
   },
+  created () {
+    // 数据加载成功就去获取route中的query参数，并且赋值（为了让注册页面注册成功，跳转到登录页面就能带入已注册的信息）
+    const { username, password } = this.$route.params
+    this.username = username
+    this.password = password
+  },
   methods: {
     async  login () {
       const res = await this.$axios.post('/login', {
         username: this.username,
         password: this.password
       })
-      const { statusCode, message } = res.data
+      const { statusCode, message, data } = res.data
       if (statusCode === 200) {
         this.$toast.success(message)
+        // 登录成功把token和id存到本地
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('userId', data.user.id)
+        // 跳转到用户页面(用了路由名字)
+        this.$router.push('user')
       } else {
         this.$toast.fail(message)
       }
@@ -65,7 +76,8 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+// scoped属性是为了让当前组件样式只在当前组件成效
 .tip {
   height: 50px;
   line-height: 50px;

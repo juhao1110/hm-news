@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
@@ -42,14 +41,6 @@ router.beforeEach((to, from, next) => {
     router.push('login')
   }
 })
-
-//  解决重复跳转到当前路由的异常,全局的把push的异常给处理了
-const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push (location) {
-  // 原理：捕捉跳转异常，并替换原来的push方法
-  return originalPush.call(this, location).catch(err => err)
-}
-
 // 把axios对象添加到Vue的原型对象中，这样发送请求是就可以直接用原型对象中$axios，不用在各个页面分别引用
 Vue.prototype.$axios = axios
 // 给axios配置默认的baseURL，基准地址，发送请求是会自动拼接，直接写接口，也方便管理

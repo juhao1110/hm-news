@@ -11,6 +11,12 @@ const routes = [
   { path: '/register', component: Register, name: 'register' },
   { path: '/user', component: User, name: 'user' }
 ]
+//  解决重复跳转到当前路由的异常,全局的把push的异常给处理了
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  // 原理：捕捉跳转异常，并替换原来的push方法
+  return originalPush.call(this, location).catch(err => err)
+}
 const router = new VueRouter({
   routes
 })

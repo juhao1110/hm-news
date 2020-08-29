@@ -17,7 +17,7 @@ export default {
   methods: {
     // 注册点击跳转到父组件传来的地址
     clickFn () {
-      this.$router.push(this.to)
+      if (this.to) this.$router.push(this.to)
     }
   }
 }

@@ -70,6 +70,8 @@ export default {
         this.$router.push('user')
       } else {
         this.$toast.fail(message)
+        // 为防止虚假token和id ，登录失败清除本地缓存
+        localStorage.clear()
       }
     }
   }

@@ -46,7 +46,7 @@ axios.interceptors.request.use(function (config) {
 })
 // 设置响应拦截器，处理token验证不通过的情况
 axios.interceptors.response.use(function (response) {
-  console.log(response.data)
+  // console.log(response.data)
   const { statusCode, message } = response.data
   if (statusCode === 401 && message === '用户信息验证失败') {
     // 清除token和userId

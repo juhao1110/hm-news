@@ -1,6 +1,6 @@
 <template>
   <div class="user">
-     <div class="header">
+     <div class="header" @click="$router.push('/edit')">
          <div class="avatar">
            <!-- 数据中的是相对定位，要拼接基地址,动态绑定 -->
             <img :src="$axios.defaults.baseURL+info.head_img">
@@ -19,7 +19,7 @@
      </div>
      <!-- 导航条 -->
      <!-- 父传子  把跳转的页面传给子组件(to是自定义属性) -->
-     <hm-navitem to='/follow'>
+     <hm-navitem to="/follow">
        <template>我的关注</template>
        <template  #content>关注的用户</template>
      </hm-navitem>
@@ -31,12 +31,13 @@
        <template>我的收藏</template>
        <template  #content>文章/视频</template>
      </hm-navitem>
-     <hm-navitem >
+     <hm-navitem to="/edit">
        <template>设置</template>
      </hm-navitem>
-     <hm-navitem >
-       <template>退出</template>
-     </hm-navitem>
+    <!-- 退出按钮 -->
+    <div class="logout" @click="logout">
+      <van-button type="primary" size="large">退出</van-button>
+    </div>
   </div>
 </template>
 
@@ -65,6 +66,30 @@ export default {
   data () {
     return {
       info: ''
+    }
+  },
+  methods: {
+    // 因为请求有失败的情况，点击取消就是请求失败，如果没有捕捉就会报错，所以用try...catch捕捉异常
+    // try 里面是可能请求失败的请求，catch 里面是失败的处理逻辑
+    async  logout () {
+      try {
+        // 点击退出，跳出确认框
+        await this.$dialog.confirm({
+          title: '温馨提示',
+          message: '是否确定退出登录'
+        })
+        // 点击确认就是请求成功，确认退出
+        // 清除token和userId
+        localStorage.removeItem('token')
+        localStorage.removeItem('userId')
+        // 提示退出成功
+        this.$toast.success('退出成功')
+        // 返回到登录页面
+        this.$router.push('/login')
+      } catch {
+        // 提示取消退出
+        this.$toast('取消退出')
+      }
     }
   }
 }
@@ -103,6 +128,9 @@ export default {
         color: #666;
       }
     }
+  }
+  .logout {
+    padding: 20px;
   }
 }
 </style>

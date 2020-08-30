@@ -44,17 +44,18 @@
 export default {
   // 数据加载完成就要发送请求获取个人信息
   async created () {
+    // 因为在main.js写了请求拦截器中添加了token的请求头，所以以下注释掉
     // 获取个人信息的时候，需要传递userId和token
     // token必须放在请求头中，请求头中的 Authorization(授权)
-    const token = localStorage.getItem('token')
+    // const token = localStorage.getItem('token')
     const userId = localStorage.getItem('userId')
     const res = await this.$axios.get(`/user/${userId}`, {
       // 设置请求头
-      headers: {
-        Authorization: token
-      }
+      // headers: {
+      //   Authorization: token
+      // }
     })
-    console.log(res.data)
+    // console.log(res.data)
     const { statusCode, data } = res.data
     // 如果请求成功就把请求数据赋值给定义的info（方便渲染）
     if (statusCode === 200) {

@@ -15,9 +15,11 @@ export default {
     to: String
   },
   methods: {
-    // 注册点击跳转到父组件传来的地址
     clickFn () {
+      // 注册点击跳转到父组件传来的地址
       if (this.to) this.$router.push(this.to)
+      // 并且触发组件上的点击事件
+      this.$emit('click')
     }
   }
 }

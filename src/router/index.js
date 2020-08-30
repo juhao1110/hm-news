@@ -24,9 +24,12 @@ const router = new VueRouter({
   routes
 })
 // 导航卫士：全局前置收尾，如果跳转的页面不是user页面或者有token，就能跳转，不然就回到登录页
+// 把需要守卫的导航名写在一个数组中
+const authUrls = ['user', 'edit']
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
-  if (to.name !== 'user' || token) {
+  // 判断，如果要跳转的网页不是需要守卫的名字，或者有token就放行
+  if (!authUrls.includes(to.name) || token) {
     next()
   } else {
     router.push('login')

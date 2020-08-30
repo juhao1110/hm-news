@@ -12,7 +12,7 @@
           <template>密码</template>
           <template #content>******</template>
       </hm-navitem>
-      <hm-navitem>
+      <hm-navitem @click="showGender">
           <template>性别</template>
           <template #content>{{user.gender === 0 ? "女" : "男"}}</template>
       </hm-navitem>
@@ -31,6 +31,23 @@
         </van-cell-group>
       </van-dialog>
       <!-- 修改性别的修改框 -->
+      <van-dialog v-model="isGenderShow" title="编辑性别" show-cancel-button @confirm="updateGender">
+        <van-radio-group v-model="gender">
+          <!-- Cell和CellGroup组件 -->
+          <van-cell-group>
+            <van-cell title="女" clickable @click="gender = 0">
+              <template #right-icon>
+                <van-radio :name="0" />
+              </template>
+            </van-cell>
+            <van-cell title="男" clickable @click="gender = 1">
+              <template #right-icon>
+                <van-radio :name="1" />
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </van-radio-group>
+      </van-dialog>
   </div>
 </template>
 
@@ -47,7 +64,9 @@ export default {
       isNickNameShow: false,
       nickname: '',
       isPasswordShow: false,
-      password: ''
+      password: '',
+      isGenderShow: false,
+      gender: ''
     }
   },
   methods: {
@@ -87,6 +106,14 @@ export default {
     },
     updatePassword () {
       this.updateUser({ password: this.password })
+    },
+    showGender () {
+      // 显示修改框
+      this.isGenderShow = true
+      this.gender = this.user.gender
+    },
+    updateGender () {
+      this.updateUser({ gender: this.gender })
     }
   }
 }

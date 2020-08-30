@@ -68,14 +68,10 @@ export default {
         localStorage.setItem('userId', data.user.id)
         // 跳转到用户页面(用了路由名字)
         this.$router.push('user')
+      } else {
+        // 提示失败
+        this.$toast.fail(message)
       }
-      // 在响应拦截器中 设置了token响应失败的逻辑，以下注释掉
-      // else {
-      //   this.$toast.fail(message)
-      //   // 为防止虚假token和id ，登录失败清除本地缓存
-      //   localStorage.removeItem('token')
-      //   localStorage.removeItem('userId')
-      // }
     }
   }
 }

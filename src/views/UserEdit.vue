@@ -50,14 +50,32 @@
           </van-cell-group>
         </van-radio-group>
       </van-dialog>
+      <!-- 截取图片的组件 -->
+      <div class="mask" v-show="isShowMask">
+        <van-button type="primary" class="crop" @click="crop">裁剪</van-button>
+        <van-button type="danger" class="cancel" @click="cancel">取消</van-button>
+        <VueCropper
+        ref="cropper"
+        :img="img"
+        autoCrop
+        autoCropWidth="100"
+        autoCropHeight="100"
+        fixed>
+        </VueCropper>
+      </div>
   </div>
 </template>
 
 <script>
+// 引入截图插件
+import { VueCropper } from 'vue-cropper'
 export default {
   created () {
     // 渲染页面
     this.getUserInfo()
+  },
+  components: {
+    VueCropper
   },
   data () {
     return {
@@ -68,7 +86,9 @@ export default {
       isPasswordShow: false,
       password: '',
       isGenderShow: false,
-      gender: ''
+      gender: '',
+      isShowMask: false,
+      img: ''
     }
   },
   methods: {
@@ -147,20 +167,40 @@ export default {
       if (file.file.size >= 20 * 1024) {
         return this.$toast.fail('图片过大')
       }
-      // 发送请求，上传文件
-      // 如果是通过ajax上传文件，请求体不能直接是一个普通对象，必须是一个formData对象
-      const fd = new FormData()
-      // 把需要发送的信息追加到fs实例对象中
-      fd.append('file', file.file)
-      const res = await this.$axios.post('/upload', fd)
-      console.log(res)
-      const { statusCode, data } = res.data
-      if (statusCode === 200) {
-        // 把发送修改头像请求（之前已封装）
-        this.updateUser({
-          head_img: data.url
-        })
-      }
+      // 符合显示截图框
+      this.isShowMask = true
+      // 设置截取的图片 (base64格式的)
+      this.img = file.content
+    },
+    // 点击取消按钮
+    cancel () {
+      // 截取框隐藏
+      this.isShowMask = false
+    },
+    // 点击截图按钮
+    crop () {
+      // 内置方法 通过this.$refs.cropper 调用
+      // 获取截图的blob数据
+      this.$refs.cropper.getCropBlob(async info => {
+      // do something
+        // console.log(info)
+        // 发送请求，上传文件
+        // 如果是通过ajax上传文件，请求体不能直接是一个普通对象，必须是一个formData对象
+        const fd = new FormData()
+        // 把需要发送的信息追加到fs实例对象中
+        fd.append('file', info)
+        const res = await this.$axios.post('/upload', fd)
+        // console.log(res)
+        const { statusCode, data } = res.data
+        if (statusCode === 200) {
+          // 把发送修改头像请求（之前已封装）
+          this.updateUser({
+            head_img: data.url
+          })
+        }
+        // 隐藏截取框
+        this.isShowMask = false
+      })
     }
   }
 }
@@ -193,6 +233,23 @@ export default {
       padding: 20px;
       .van-field {
         border: 1px solid #ccc;
+      }
+    }
+    .mask {
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      .crop,
+      .cancel {
+        position: fixed;
+        top: 0;
+        z-index: 999;
+      }
+      .cancel {
+        right: 0;
       }
     }
 }

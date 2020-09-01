@@ -3,6 +3,8 @@
       <hm-header>编辑资料</hm-header>
       <div class="avatar">
           <img :src="$axios.defaults.baseURL + user.head_img" alt="">
+          <!-- 上传组件，可修改头像 -->
+          <van-uploader :after-read="afterRead" />
       </div>
       <hm-navitem @click="showNickname">
           <template>昵称</template>
@@ -124,6 +126,41 @@ export default {
     },
     updateGender () {
       this.updateUser({ gender: this.gender })
+    },
+    // 封装函数，判断上传的类型
+    isImg (name) {
+      if (name.endsWith('.gif') || name.endsWith('.png') || name.endsWith('.jpg') || name.endsWith('.jpeg')) {
+        return true
+      } else {
+        return false
+      }
+    },
+    // 文件上传完毕触发该回调函数
+    async  afterRead (file) {
+      // 此时可以自行将文件上传至服务器  file.file
+      // console.log(file.file)
+      // 发送请求先限制图片大小和格式，如果满足才上传，不满足就提示
+      if (!this.isImg(file.file.name)) {
+        // 不是图片
+        return this.$toast.fail('上传图片格式不正确')
+      }
+      if (file.file.size >= 20 * 1024) {
+        return this.$toast.fail('图片过大')
+      }
+      // 发送请求，上传文件
+      // 如果是通过ajax上传文件，请求体不能直接是一个普通对象，必须是一个formData对象
+      const fd = new FormData()
+      // 把需要发送的信息追加到fs实例对象中
+      fd.append('file', file.file)
+      const res = await this.$axios.post('/upload', fd)
+      console.log(res)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        // 把发送修改头像请求（之前已封装）
+        this.updateUser({
+          head_img: data.url
+        })
+      }
     }
   }
 }
@@ -132,12 +169,23 @@ export default {
 <style lang="less" scoped >
 .user-edit {
     .avatar {
+        position: relative;
         padding: 40px 0;
         text-align: center;
         img {
             width: 100px;
             height: 100px;
             border-radius: 50%;
+        }
+        // 上传组件的样式
+        .van-uploader {
+          position: absolute;
+          top: 40px;
+          left: 50%;
+          transform: translate(-50%);
+          width: 100px;
+          height: 100px;
+          opacity: 0;
         }
     }
     // 深度选择器，能够覆盖组件动态生成的子元素的样式

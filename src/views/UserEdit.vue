@@ -18,9 +18,9 @@
       </hm-navitem>
       <!-- 修改昵称的修改框 -->
       <van-dialog v-model="isNickNameShow" title="编辑昵称" show-cancel-button @confirm="updateNickname">
-        <!-- field输入框 -->
+        <!-- field输入框 ref可以给一个DOM对象或者组件添加一个引用（标记） -->
         <van-cell-group>
-          <van-field v-model="nickname" />
+          <van-field v-model="nickname" ref="nickname" />
         </van-cell-group>
       </van-dialog>
       <!-- 修改密码的修改框 -->
@@ -89,11 +89,17 @@ export default {
         this.$toast.success('更改成功')
       }
     },
-    showNickname () {
+    async  showNickname () {
       // 显示修改框
       this.isNickNameShow = true
       // 回显昵称
       this.nickname = this.user.nickname
+      // 点击修改框，自动聚焦 已经用ref标记了要聚焦的组件，用this.$refs.标记名来获取
+      // 但是页面数据更新完，DOM要下一次才更新，所以用this.$nextTick()
+      // 等待页面更新
+      await this.$nextTick()
+      // 用this.$refs.标记名来获取，并调用方法聚焦
+      this.$refs.nickname.focus()
     },
     updateNickname () {
       this.updateUser({ nickname: this.nickname })

@@ -3,7 +3,7 @@
      <div class="header" @click="$router.push('/edit')">
          <div class="avatar">
            <!-- 数据中的是相对定位，要拼接基地址,动态绑定 -->
-            <img :src="$axios.defaults.baseURL+info.head_img">
+            <img :src="$base + info.head_img">
          </div>
          <div class="info">
              <div class="name">

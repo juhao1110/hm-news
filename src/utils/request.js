@@ -6,8 +6,12 @@ import { Toast } from 'vant'
 
 // 把axios对象添加到Vue的原型对象中，这样发送请求是就可以直接用原型对象中$axios，不用在各个页面分别引用
 Vue.prototype.$axios = axios
+const URL = 'http://127.0.0.1:3000'
 // 给axios配置默认的baseURL，基准地址，发送请求是会自动拼接，直接写接口，也方便管理
-axios.defaults.baseURL = 'http://127.0.0.1:3000'
+axios.defaults.baseURL = URL
+// 把基地址加到Vue原型对象中，方便头像拼接
+Vue.prototype.$base = URL
+
 // 设置请求拦截器,在请求中添加请求头（带上token），以免以后请求时再发送token
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('token')

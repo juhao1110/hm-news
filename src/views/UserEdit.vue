@@ -27,7 +27,7 @@
       <van-dialog v-model="isPasswordShow" title="编辑密码" show-cancel-button @confirm="updatePassword">
         <!-- field输入框 -->
         <van-cell-group>
-          <van-field v-model="password" />
+          <van-field v-model="password" ref="password"/>
         </van-cell-group>
       </van-dialog>
       <!-- 修改性别的修改框 -->
@@ -104,11 +104,15 @@ export default {
     updateNickname () {
       this.updateUser({ nickname: this.nickname })
     },
-    showPassword () {
+    async  showPassword () {
       // 显示修改框
       this.isPasswordShow = true
       // 回显密码
       this.password = this.user.password
+      // 等待DOM更新
+      await this.$nextTick()
+      // 修改密码框自动聚焦
+      this.$refs.password.focus()
     },
     updatePassword () {
       this.updateUser({ password: this.password })

@@ -9,6 +9,7 @@ import UserEdit from '../views/user/UserEdit.vue'
 import Follow from '../views/user/Follow.vue'
 import Comment from '../views/user/Comment.vue'
 import Star from '../views/user/Star.vue'
+import Index from '../views/news/index.vue'
 
 Vue.use(VueRouter)
 
@@ -19,7 +20,8 @@ const routes = [
   { path: '/edit', component: UserEdit, name: 'edit' },
   { path: '/follow', component: Follow, name: 'follow' },
   { path: '/comment', component: Comment, name: 'comment' },
-  { path: '/star', component: Star, name: 'star' }
+  { path: '/star', component: Star, name: 'star' },
+  { path: '/', component: Index, name: 'index' }
 ]
 
 //  解决重复跳转到当前路由的异常,全局的把push的异常给处理了

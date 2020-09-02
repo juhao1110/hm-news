@@ -2,11 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { Toast } from 'vant'
 // 导入页面组件
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
-import User from '../views/User.vue'
-import UserEdit from '../views/UserEdit.vue'
-import Follow from '../views/Follow.vue'
+import Login from '../views/user/Login.vue'
+import Register from '../views/user/Register.vue'
+import User from '../views/user/User.vue'
+import UserEdit from '../views/user/UserEdit.vue'
+import Follow from '../views/user/Follow.vue'
+import Comment from '../views/user/Comment.vue'
 
 Vue.use(VueRouter)
 
@@ -15,7 +16,8 @@ const routes = [
   { path: '/register', component: Register, name: 'register' },
   { path: '/user', component: User, name: 'user' },
   { path: '/edit', component: UserEdit, name: 'edit' },
-  { path: '/follow', component: Follow, name: 'follow' }
+  { path: '/follow', component: Follow, name: 'follow' },
+  { path: '/comment', component: Comment, name: 'comment' }
 ]
 
 //  解决重复跳转到当前路由的异常,全局的把push的异常给处理了

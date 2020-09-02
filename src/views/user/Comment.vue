@@ -4,24 +4,24 @@
       <hm-header>我的评论</hm-header>
     </div>
     <!-- List 组件可以与 PullRefresh 组件结合使用，实现下拉刷新的效果 -->
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh" >
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh" success-text="刷新成功">
         <van-list
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
           :immediate-check= "false"
           @load="onLoad"
-        >
+          >
           <div class="item" v-for="item in list" :key="item.id">
             <div class="time">{{item.create_date | time('YYYY-MM-DD HH:mm')}}</div>
             <div class="comment" v-if="item.parent">
               <div class="name">回复：{{item.parent.user.nickname}}</div>
               <div class="comment_content">{{item.parent.content}}</div>
             </div>
-            <div class="conntent">{{item.content}}</div>
+            <div class="content">{{item.content}}</div>
             <div class="origin">
-              <div> 原文：{{item.post.title}}</div>
-            <span class="iconfont iconjiantou1"></span>
+              <div class="one-txt-cut "> 原文：{{item.post.title}}</div>
+              <span class="iconfont iconjiantou1"></span>
             </div>
           </div>
         </van-list>
@@ -59,14 +59,14 @@ export default {
           pageSize: this.pageSize
         }
       })
-      console.log(res.data)
+      // console.log(res.data)
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         // 因为后面会多次加载数据，所以不能直接赋值，不然会覆盖，要展开数据拼接
         this.list = [...this.list, ...data]
         //  数据已全部加载完毕，组件则直接将finished设置成true。所以手动把loading改成false
         this.loading = false
-        // // 把下拉的状态改成false
+        //  把下拉的状态改成false
         this.refreshing = false
         // 判断是否有更多的数据更新，如果没有，finished改成true (数据的数据长度小于6，就说明没有更多的数据了)
         if (data.length < 6) {
@@ -92,7 +92,6 @@ export default {
       this.pageIndex = 1
       // 发送请求加载
       this.getCommentList()
-      this.$toast('刷新成功')
     }
   }
 }
@@ -115,7 +114,7 @@ export default {
       font-size: 14px;
     }
     .comment_content {
-      padding-top: 5px;
+      padding-top: 10px;
     }
   }
   .origin {

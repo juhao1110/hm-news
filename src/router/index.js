@@ -8,6 +8,7 @@ import User from '../views/user/User.vue'
 import UserEdit from '../views/user/UserEdit.vue'
 import Follow from '../views/user/Follow.vue'
 import Comment from '../views/user/Comment.vue'
+import Star from '../views/user/Star.vue'
 
 Vue.use(VueRouter)
 
@@ -17,7 +18,8 @@ const routes = [
   { path: '/user', component: User, name: 'user' },
   { path: '/edit', component: UserEdit, name: 'edit' },
   { path: '/follow', component: Follow, name: 'follow' },
-  { path: '/comment', component: Comment, name: 'comment' }
+  { path: '/comment', component: Comment, name: 'comment' },
+  { path: '/star', component: Star, name: 'star' }
 ]
 
 //  解决重复跳转到当前路由的异常,全局的把push的异常给处理了
@@ -32,7 +34,7 @@ const router = new VueRouter({
 })
 // 导航卫士：全局前置收尾，如果跳转的页面不是user页面或者有token，就能跳转，不然就回到登录页
 // 把需要守卫的导航名写在一个数组中
-const authUrls = ['user', 'edit', 'follow']
+const authUrls = ['user', 'edit', 'follow', 'comment', 'star']
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   // 判断，如果要跳转的网页不是需要守卫的名字，或者有token就放行

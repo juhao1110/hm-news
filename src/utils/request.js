@@ -11,6 +11,16 @@ const URL = 'http://127.0.0.1:3000'
 axios.defaults.baseURL = URL
 // 把基地址加到Vue原型对象中，方便头像拼接
 Vue.prototype.$base = URL
+// 因为图片可能是本地图片，也有可能是网络图片，所以设置一个处理图片的通用路径
+Vue.prototype.$url = function (url) {
+  if (url.startsWith('http')) {
+    // 如果是http开头的就是网络图片，直接返回图片url路径
+    return url
+  } else {
+    // 不然就是本地图片，需要拼接基地址
+    return URL + url
+  }
+}
 
 // 设置请求拦截器,在请求中添加请求头（带上token），以免以后请求时再发送token
 axios.interceptors.request.use(function (config) {

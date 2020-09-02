@@ -8,7 +8,7 @@
           </div>
           <div class="title">
             <p>{{item.nickname}}</p>
-            <p>{{item.create_date | time('YYYY-MM-DD  HH:mm')}}</p>
+            <p>{{item.create_date | time('YYYY-MM-DD')}}</p>
           </div>
           <div class="cancel">
             <van-button type="primary" round size="small" @click="unfollow(item.id)">取消关注</van-button>

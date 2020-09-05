@@ -1,6 +1,17 @@
 <template>
   <div class="hm-post">
-    <div class="single-img-post" v-if="post.cover.length < 3">
+    <div class="video-post" v-if="post.type === 2">
+      <div class="title">{{post.title}}</div>
+      <div class="video">
+        <span class="iconfont iconshipin"></span>
+        <img :src="$url(post.cover[0].url)" alt="">
+      </div>
+      <div class="user">
+        <span>{{post.user.nickname}}</span>
+        <span>{{post.comment_length}} 跟帖</span>
+      </div>
+    </div>
+    <div class="single-img-post" v-else-if="post.cover.length > 0 && post.cover.length < 3">
       <div class="info">
         <div class="title">{{post.title}}</div>
         <div class="user">
@@ -12,7 +23,7 @@
         <img :src="$url(post.cover[0].url)" alt="">
       </div>
     </div>
-    <div class="multiple-img-post" v-else>
+    <div class="multiple-img-post" v-else-if="post.cover.length >= 3">
       <div class="title">{{post.title}}</div>
       <div class="img">
         <img :src="$url(post.cover[0].url)" alt="">
@@ -80,6 +91,36 @@ export default {
     img {
       width: 110px;
       height: 74px;
+      object-fit: cover;
+    }
+  }
+}
+.video-post {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  .title {
+    font-size: 16px;
+  }
+  .video {
+    position: relative;
+    padding: 10px 0;
+    img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+    }
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 50px;
+      font-size: 24px;
     }
   }
 }

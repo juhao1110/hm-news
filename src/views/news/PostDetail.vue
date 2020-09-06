@@ -22,9 +22,9 @@
       <video v-else :src="getUrl(post.content)" controls autoplay muted></video>
     </div>
     <div class="buttons">
-      <div class="good">
+      <div class="good" @click="like" :class="{active : post.has_like}">
         <span class="iconfont icondianzan"></span>
-        <span>112</span>
+        <span>{{post.like_length || 0}}</span>
       </div>
       <div class="share">
         <span class="iconfont iconweixin"></span>
@@ -64,8 +64,8 @@ export default {
       div.innerHTML = url
       return div.innerText
     },
-    async follow () {
-      // 判断是否登录
+    noLogin () {
+      // 判断是否登录的封装函数
       const token = localStorage.getItem('token')
       if (!token) {
         // 没有登录
@@ -76,8 +76,16 @@ export default {
             back: true
           }
         })
-        return
+        // 代表没有登录
+        return true
+      } else {
+        // 代表登录了
+        return false
       }
+    },
+    async follow () {
+      // 判断是否登录,如没有登录就return掉
+      if (this.noLogin()) return
       // 登录了就发送请求关注该用户
       const res = await this.$axios.get(`/user_follows/${this.post.user.id}`)
       // console.log(res.data)
@@ -91,6 +99,19 @@ export default {
       const res = await this.$axios.get(`/user_unfollow/${this.post.user.id}`)
       if (res.data.statusCode === 200) {
         this.$toast.success('取消关注成功')
+        // 重新渲染
+        this.getInfo()
+      }
+    },
+    async like () {
+      // 先判断是否登录
+      if (this.noLogin()) return
+      // 登录了发送请求点赞
+      const res = await this.$axios.get(`/post_like/${this.post.id}`)
+      console.log(res.data)
+      const { statusCode, message } = res.data
+      if (statusCode === 200) {
+        this.$toast(message)
         // 重新渲染
         this.getInfo()
       }
@@ -178,6 +199,10 @@ export default {
      .iconweixin {
        color: lime;
      }
+   }
+   .active {
+     border-color: red;
+     color: red;
    }
  }
 </style>

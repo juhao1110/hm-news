@@ -12,6 +12,7 @@
         <div class="follow" v-else @click="follow">关注</div>
       </div>
     </div>
+
     <div class="content">
       <div class="title">{{post.title}}</div>
       <div class="name">
@@ -20,16 +21,25 @@
       </div>
       <div v-if="post.type === 1" class="info" v-html="post.content"></div>
       <video v-else :src="getUrl(post.content)" controls autoplay muted></video>
+      <div class="buttons">
+        <div class="good" @click="like" :class="{active : post.has_like}">
+          <span class="iconfont icondianzan"></span>
+          <span>{{post.like_length || 0}}</span>
+        </div>
+        <div class="share">
+          <span class="iconfont iconweixin"></span>
+          <span>微信</span>
+        </div>
+      </div>
     </div>
-    <div class="buttons">
-      <div class="good" @click="like" :class="{active : post.has_like}">
-        <span class="iconfont icondianzan"></span>
-        <span>{{post.like_length || 0}}</span>
+
+    <div class="footer">
+      <div class="search">
+        <input type="text" placeholder="回复">
       </div>
-      <div class="share">
-        <span class="iconfont iconweixin"></span>
-        <span>微信</span>
-      </div>
+      <span class="iconfont iconpinglun-"><i>20</i></span>
+      <span class="iconfont iconshoucang" :class="{now: post.has_star}" @click="star"></span>
+      <span class="iconfont iconfenxiang"></span>
     </div>
   </div>
 </template>
@@ -115,6 +125,18 @@ export default {
         // 重新渲染
         this.getInfo()
       }
+    },
+    async star () {
+      // 是否登录
+      if (this.noLogin()) return
+      // 发送请求
+      const res = await this.$axios.get(`/post_star/${this.post.id}`)
+      const { statusCode, message } = res.data
+      if (statusCode === 200) {
+        this.$toast(message)
+        // 重新渲染
+        this.getInfo()
+      }
     }
   }
 }
@@ -158,6 +180,7 @@ export default {
 }
 .content {
   padding: 10px;
+  border-bottom: 3px solid #ccc;
   .title {
     font-weight: 700;
     font-size: 18px;
@@ -179,8 +202,7 @@ export default {
   video {
     width: 100%;
   }
-}
-.buttons {
+  .buttons {
    display: flex;
    padding: 20px 0;
    justify-content: space-around;
@@ -205,4 +227,50 @@ export default {
      color: red;
    }
  }
+}
+.footer {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #ccc;
+  position: fixed;
+  bottom: 0;
+  align-items: center;
+  padding: 0 10px;
+  .iconfont {
+    font-size: 24px;
+  }
+  .now {
+    color: red;
+  }
+  .iconpinglun- {
+    position: relative;
+    i {
+      position: absolute;
+      right: -5px;
+      top: 0;
+      background-color: red;
+      font-size: 10px;
+      color: #fff;
+      padding: 0 3px;
+      border-radius: 5px;
+      font-style: normal;
+    }
+  }
+  .search {
+    width: 180px;
+    padding-right: 10px;
+    input {
+      height: 30px;
+      background-color: #ddd;
+      border-radius: 15px;
+      width: 100%;
+      border: none;
+      font-size: 14px;
+      padding-left: 20px;
+    }
+  }
+}
+
 </style>

@@ -67,7 +67,14 @@ export default {
         localStorage.setItem('token', data.token)
         localStorage.setItem('userId', data.user.id)
         // 跳转到用户页面(用了路由名字)
-        this.$router.push('user')
+        // this.$router.push('user')
+        // 在新闻详情页面点击关注也需要登录，在新闻详情页登录时，会在地址栏传参back=true
+        // 所以进行判断，如果有参数back，那么就跳回前一页，不然登录成功就跳到用户页
+        if (this.$route.query.back) {
+          this.$router.back()
+        } else {
+          this.$router.push('/user')
+        }
       } else {
         // 提示失败
         this.$toast.fail(message)

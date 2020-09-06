@@ -93,7 +93,7 @@ export default {
       if (statusCode === 200) {
         // 上拉会加载新的数据，不能直接赋值，要拼接
         this.newsList = [...this.newsList, ...data]
-        console.log(this.newsList)
+        // console.log(this.newsList)
         // 把上拉加载状态改为false
         this.loading = false
         // 把下拉的加载状态改为false

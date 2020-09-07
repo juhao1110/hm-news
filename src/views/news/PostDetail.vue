@@ -32,6 +32,12 @@
         </div>
       </div>
     </div>
+    <!-- 评论 -->
+    <div class="comment_list">
+      <h3>精彩跟帖</h3>
+      <!-- 评论组件 -->
+      <hm-comment :comment="comment" v-for="comment in commentList" :key="comment.id"></hm-comment>
+    </div>
 
     <div class="footer">
       <div class="search">
@@ -47,14 +53,18 @@
 <script>
 export default {
   created () {
+    // 请求文章详情
     this.getInfo()
+    // 请求评论详情
+    this.getCommentList()
   },
   data () {
     return {
       post: {
         // 为了防止一开始没有加载到数据，所以先给user空对象
         user: {}
-      }
+      },
+      commentList: ''
     }
   },
   methods: {
@@ -137,12 +147,26 @@ export default {
         // 重新渲染
         this.getInfo()
       }
+    },
+    async getCommentList () {
+      // 请求评论详情
+      // 获得文章id
+      const id = this.$route.params.id
+      const res = await this.$axios.get(`/post_comment/${id}`)
+      console.log(res.data)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.commentList = data
+      }
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.post-detail {
+  padding-bottom: 50px;
+}
 .header {
   display: flex;
   align-items: center;
@@ -228,7 +252,15 @@ export default {
    }
  }
 }
+.comment_list {
+  h3 {
+    text-align: center;
+    padding: 10px 0;
+    font-size: 16px;
+  }
+}
 .footer {
+  background-color: #fff;
   width: 100%;
   height: 50px;
   display: flex;

@@ -44,7 +44,13 @@
 <script>
 export default {
   name: 'index',
-  created () {
+  // created () {
+  //   // this.getTabList()
+  // },
+  activated () {
+    // 页面缓存被激活时触发的事件，重新获取tab数据
+    // this.getTabList()
+    console.log('缓存')
     this.getTabList()
   },
   data () {
@@ -82,6 +88,7 @@ export default {
       }
     },
     async getNewsList (id) {
+      if (this.pageIndex === 1) this.newsList = []
       const res = await this.$axios.get('/post', {
         params: {
           pageIndex: this.pageIndex,

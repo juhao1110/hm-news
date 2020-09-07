@@ -20,6 +20,10 @@ import './utils/filter'
 import './utils/vant'
 
 Vue.config.productionTip = false
+// 创建一个bus
+const bus = new Vue()
+// 把bus挂载到Vue原型上
+Vue.prototype.$bus = bus
 
 new Vue({
   router,

@@ -8,7 +8,7 @@
         <p>{{comment.user.nickname}}</p>
         <p>{{comment.create_date | now}}</p>
       </div>
-      <div class="right">回复</div>
+      <div class="right" @click="reply">回复</div>
     </div>
     <!-- 楼层组件 -->
     <hm-floor :comment="comment.parent" :count="count" v-if="comment.parent"></hm-floor>
@@ -36,6 +36,10 @@ export default {
       } else {
         return num
       }
+    },
+    reply () {
+      // 触发reply事件，并且传id和nickname
+      this.$bus.$emit('reply', this.comment.id, this.comment.user.nickname)
     }
   }
 }

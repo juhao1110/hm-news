@@ -38,12 +38,17 @@
       <!-- 评论组件 -->
       <hm-comment :comment="comment" v-for="comment in commentList" :key="comment.id"></hm-comment>
     </div>
-
-    <div class="footer">
+    <!-- 文本域形式的底部（写评论的） -->
+    <div class="footer-textarea" v-if="isShowTextarea">
+      <textarea  :placeholder="'回复：'+ this.nickname" ref="textarea" v-model="content"></textarea>
+      <van-button type="primary" @click="publish">发送</van-button>
+    </div>
+    <!-- 文本框形式的底部 -->
+    <div class="footer-input" v-else>
       <div class="search">
-        <input type="text" placeholder="回复">
+        <input type="text" placeholder="回复" @focus="onFocus">
       </div>
-      <span class="iconfont iconpinglun-"><i>20</i></span>
+      <span class="iconfont iconpinglun-"><i>{{post.comment_length}}</i></span>
       <span class="iconfont iconshoucang" :class="{now: post.has_star}" @click="star"></span>
       <span class="iconfont iconfenxiang"></span>
     </div>
@@ -57,6 +62,23 @@ export default {
     this.getInfo()
     // 请求评论详情
     this.getCommentList()
+    // 给bus 注册发布评论事件,获得回复id和要回复的昵称
+    this.$bus.$on('reply', async (id, nickname) => {
+      console.log('bus', id, nickname)
+      // 显示评论框
+      this.isShowTextarea = true
+      // 等待DOM更新
+      await this.$nextTick()
+      // 评论框自动获得焦点
+      this.$refs.textarea.focus()
+      // 赋值回显
+      this.replyId = id
+      this.nickname = '@' + nickname
+    })
+  },
+  destroyed () {
+    // 离开页面销毁bus的reply事件
+    this.$bus.$off('reply')
   },
   data () {
     return {
@@ -64,7 +86,14 @@ export default {
         // 为了防止一开始没有加载到数据，所以先给user空对象
         user: {}
       },
-      commentList: ''
+      commentList: '',
+      isShowTextarea: false,
+      // 评论的内容
+      content: '',
+      // 要回复的id
+      replyId: '',
+      // 要回复的昵称
+      nickname: ''
     }
   },
   methods: {
@@ -157,6 +186,46 @@ export default {
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         this.commentList = data
+      }
+    },
+    async onFocus () {
+      // input获得焦点就显示出textarea输出框
+      this.isShowTextarea = true
+      // 等DOM更新
+      await this.$nextTick()
+      // 让textarea自动获得焦点
+      this.$refs.textarea.focus()
+    },
+    async publish () {
+      // 发送发布评论请求
+      // 判断是否登录,如没有登录就return掉
+      if (this.noLogin()) return
+      // 评论非空判断
+      if (!this.content) {
+        this.$toast('评论不能为空')
+        this.isShowTextarea = false
+        return
+      }
+      // 登录了就发送请求
+      const res = await this.$axios.post(`/post_comment/${this.post.id}`, {
+        content: this.content,
+        parent_id: this.replyId
+      })
+      // console.log(res.data)
+      const { statusCode, message } = res.data
+      if (statusCode === 200) {
+        this.$toast.success(message)
+        // 重新渲染文章数据和评论数据
+        this.getCommentList()
+        this.getInfo()
+        // 清空文本域内容
+        this.content = ''
+        // 清空回复的id
+        this.replyId = ''
+        // 清空要回复的昵称
+        this.nickname = ''
+        // 隐藏文本域
+        this.isShowTextarea = false
       }
     }
   }
@@ -259,7 +328,7 @@ export default {
     font-size: 16px;
   }
 }
-.footer {
+.footer-input {
   background-color: #fff;
   width: 100%;
   height: 50px;
@@ -304,5 +373,28 @@ export default {
     }
   }
 }
-
+.footer-textarea {
+  display: flex;
+  width: 100%;
+  height: 100px;
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  padding: 10px;
+  align-items: flex-end;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+  justify-content: space-around;
+  textarea {
+    width: 260px;
+    height: 80px;
+    background-color: #ccc;
+    border-radius: 5px;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    // 禁止拖动
+    resize: none;
+  }
+}
 </style>

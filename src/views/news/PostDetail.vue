@@ -40,8 +40,8 @@
     </div>
     <!-- 文本域形式的底部（写评论的） -->
     <div class="footer-textarea" v-if="isShowTextarea">
-      <textarea  :placeholder="'回复：'+ this.nickname" ref="textarea" v-model="content"></textarea>
-      <van-button type="primary" @click="publish">发送</van-button>
+      <textarea  :placeholder="'回复：'+ this.nickname" ref="textarea" v-model="content" @blur="onBlur" @keyup.enter="publish"></textarea>
+      <van-button type="primary" @click="publish" >发送</van-button>
     </div>
     <!-- 文本框形式的底部 -->
     <div class="footer-input" v-else>
@@ -226,6 +226,14 @@ export default {
         this.nickname = ''
         // 隐藏文本域
         this.isShowTextarea = false
+      }
+    },
+    onBlur () {
+      // 评论框失去焦点事件，（客户不想评论时，可以失去焦点，隐藏评论框）
+      if (!this.content) {
+        this.isShowTextarea = false
+        this.nickname = ''
+        this.replyId = ''
       }
     }
   }

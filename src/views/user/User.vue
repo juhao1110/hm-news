@@ -79,9 +79,11 @@ export default {
           message: '是否确定退出登录'
         })
         // 点击确认就是请求成功，确认退出
-        // 清除token和userId
+        // 清除token和userId和缓存的激活与未激活的tab栏
         localStorage.removeItem('token')
         localStorage.removeItem('userId')
+        localStorage.removeItem('activeList')
+        localStorage.removeItem('deactiveList')
         // 提示退出成功
         this.$toast.success('退出成功')
         // 返回到登录页面

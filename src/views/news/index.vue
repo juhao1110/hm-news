@@ -30,7 +30,7 @@
             :finished="finished"
             finished-text="没有更多了"
             @load="onLoad"
-            :offset="50  "
+            :offset="50"
             :immediate-check="false"
             >
             <hm-post :post="item" v-for="item in newsList" :key="item.id"></hm-post>

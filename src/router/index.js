@@ -12,6 +12,7 @@ import Star from '../views/user/Star.vue'
 import Index from '../views/news/Index.vue'
 import Manage from '../views/news/Manage.vue'
 import PostDetail from '../views/news/PostDetail.vue'
+import Search from '../views/news/Search.vue'
 
 Vue.use(VueRouter)
 
@@ -25,7 +26,8 @@ const routes = [
   { path: '/star', component: Star, name: 'star' },
   { path: '/', component: Index, name: 'index' },
   { path: '/manage', component: Manage, name: 'manage' },
-  { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' }
+  { path: '/post-detail/:id', component: PostDetail, name: 'post-detail' },
+  { path: '/search', component: Search, name: 'search' }
 ]
 
 //  解决重复跳转到当前路由的异常,全局的把push的异常给处理了

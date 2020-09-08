@@ -73,6 +73,9 @@ export default {
   }
   .content {
     font-size: 18px;
+    // 自动换行
+    word-wrap:break-word;
+    word-break:break-all;
   }
 }
 

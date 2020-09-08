@@ -66,7 +66,9 @@ export default {
       // 因为没有提供热门的接口，就假设已经接收到了数据
       hot: ['华为', '情火', '姑娘', '关晓彤'],
       // 推荐的内容
-      recommendList: []
+      recommendList: [],
+      // 控制是否推荐
+      flag: true
     }
   },
   methods: {
@@ -84,6 +86,8 @@ export default {
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         this.list = data
+        // 得到数据就不需要推荐
+        this.flag = false
         // 如果获取到的数据为空，就提示
         if (this.list.length === 0) this.$toast('没有相关内容')
       }
@@ -116,6 +120,10 @@ export default {
     },
     // input输入时发送推荐请求（防抖动）
     recommend: debounce(async function () {
+      // 非空判断
+      if (!this.key) return
+      // 节流阀控制是否发送请求推荐
+      if (!this.flag) return this.$toast('已有文章，不发送推荐请求')
       // 发送请求
       const res = await this.$axios.get('/post_search_recommend', {
         params: {
@@ -135,6 +143,9 @@ export default {
       // 如果搜索框没有内容，那就清除list，显示历史页面
       if (value === '') {
         this.list = ''
+      } else {
+        // 当key有变化时，打开推荐请求的节流阀
+        this.flag = true
       }
     }
   }

@@ -5,31 +5,42 @@
         <span class="iconfont iconjiantou2"></span>
       </div>
       <div class="center">
-        <input type="search" placeholder="请输入搜索关键字" v-model="key">
+        <input type="search" placeholder="请输入搜索关键字" v-model="key" @keyup.enter="search" @input="recommend">
         <span class="iconfont iconsearch"></span>
       </div>
       <div class="right" @click="search">搜索</div>
     </div>
-    <div class="list" v-if="list.length">
+    <!-- 输入关键词的推荐页面 -->
+    <div class="recommend" v-if="recommendList.length">
+      <div
+      class="item one-txt-cut"
+      v-for="item in recommendList"
+      :key="item.id"
+      @click="goSearch(item.title)"
+      >{{item.title}}</div>
+    </div>
+    <!-- 搜索的页面 -->
+    <div class="list" v-else-if="list.length">
       <hm-post v-for="item in list" :key="item.id" :post="item"></hm-post>
     </div>
+    <!-- 进入到搜索页面时的页面 -->
     <div class="content" v-else>
       <div class="history">
         <h3>历史记录</h3>
         <div class="list">
-          <div class="item">关晓彤</div>
-          <div class="item">关晓彤</div>
-          <div class="item">关晓彤</div>
+          <div
+          class="item one-txt-cut"
+          v-for="item in history"
+          :key="item"
+          @click="goSearch(item)"
+          >{{item}}</div>
         </div>
       </div>
       <hr>
       <div class="hot">
         <h3>热门搜索</h3>
         <div class="list">
-          <div class="item">华为</div>
-          <div class="item">华为</div>
-          <div class="item">华为</div>
-          <div class="item">华为</div>
+          <div class="item" v-for="item in hot" :key="item" @click="goSearch(item)">{{item}}</div>
         </div>
       </div>
     </div>
@@ -37,13 +48,25 @@
 </template>
 
 <script>
+// 引入防抖函数
+import { debounce } from '../../utils/tools'
 export default {
+  created () {
+    // 读取缓存中的历史记录
+    this.history = JSON.parse(localStorage.getItem('history')) || []
+  },
   data () {
     return {
       // 搜索框的内容
       key: '',
       // 存放搜索结果
-      list: []
+      list: [],
+      // 存放历史记录
+      history: [],
+      // 因为没有提供热门的接口，就假设已经接收到了数据
+      hot: ['华为', '情火', '姑娘', '关晓彤'],
+      // 推荐的内容
+      recommendList: []
     }
   },
   methods: {
@@ -61,7 +84,18 @@ export default {
       const { statusCode, data } = res.data
       if (statusCode === 200) {
         this.list = data
+        // 如果获取到的数据为空，就提示
+        if (this.list.length === 0) this.$toast('没有相关内容')
       }
+      // 把搜索记录存放到本地
+      // 1、如果原来就的历史记录过滤掉
+      // 2、把新的搜素记录加在最前面
+      // 3、把得到的历史搜索记录存在本地
+      this.history = this.history.filter(item => item !== this.key)
+      this.history.unshift(this.key)
+      localStorage.setItem('history', JSON.stringify(this.history))
+      // 清除推荐列表数据
+      this.recommendList = []
     },
     // 点击回退按钮
     goBack () {
@@ -72,7 +106,28 @@ export default {
         // 回退上个页面
         this.$router.back()
       }
-    }
+    },
+    // 点击历史记录、热门、搜索推荐发送搜索请求
+    goSearch (item) {
+      // 让历史记录内容赋值给key
+      this.key = item
+      // 发送搜索请求
+      this.search()
+    },
+    // input输入时发送推荐请求（防抖动）
+    recommend: debounce(async function () {
+      // 发送请求
+      const res = await this.$axios.get('/post_search_recommend', {
+        params: {
+          keyword: this.key
+        }
+      })
+      console.log(res.data)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.recommendList = data
+      }
+    }, 1000)
   },
   watch: {
     // 监听key
@@ -138,6 +193,15 @@ export default {
     text-align: center;
     font-size: 13px;
     background-color: #ccc;
+  }
+}
+.recommend {
+  padding: 0 10px;
+  .item {
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
   }
 }
 </style>

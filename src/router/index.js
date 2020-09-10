@@ -2,17 +2,17 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { Toast } from 'vant'
 // 导入页面组件
-import Login from '../views/user/Login.vue'
-import Register from '../views/user/Register.vue'
-import User from '../views/user/User.vue'
-import UserEdit from '../views/user/UserEdit.vue'
-import Follow from '../views/user/Follow.vue'
-import Comment from '../views/user/Comment.vue'
-import Star from '../views/user/Star.vue'
-import Index from '../views/news/index.vue'
-import Manage from '../views/news/Manage.vue'
-import PostDetail from '../views/news/PostDetail.vue'
-import Search from '../views/news/Search.vue'
+const Login = () => import(/* webpackChunkName: "user" */'../views/user/Login.vue')
+const Register = () => import(/* webpackChunkName: "user" */'../views/user/Register.vue')
+const User = () => import(/* webpackChunkName: "user" */'../views/user/User.vue')
+const UserEdit = () => import(/* webpackChunkName: "user" */'../views/user/UserEdit.vue')
+const Follow = () => import(/* webpackChunkName: "user" */'../views/user/Follow.vue')
+const Comment = () => import(/* webpackChunkName: "user" */'../views/user/Comment.vue')
+const Star = () => import(/* webpackChunkName: "user" */'../views/user/Star.vue')
+const Index = () => import(/* webpackChunkName: "index" */'../views/news/index.vue')
+const Manage = () => import(/* webpackChunkName: "news" */'../views/news/Manage.vue')
+const PostDetail = () => import(/* webpackChunkName: "news" */'../views/news/PostDetail.vue')
+const Search = () => import(/* webpackChunkName: "news" */'../views/news/Search.vue')
 
 Vue.use(VueRouter)
 
